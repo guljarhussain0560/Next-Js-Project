@@ -1,0 +1,37 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+/*
+  This is the correct way to import all of Tailwind's
+  base styles, components, and utilities in Tailwind CSS v4.
+*/
+@import "tailwindcss";
+
+
+
+/*
+  The @layer base directive is used for adding base styles,
+  such as CSS variables, which can be referenced by
+  Tailwind utility classes.
+*/
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}
+
+/*
+  This section is now empty because all of your custom
+  classes have been moved to the individual components
+  or will be applied directly as utility classes.
+*/
+@layer utilities {
+
+}
+
+/*
+  This is a custom, non-Tailwind style.
+*/
+.w-md-editor-toolbar {
+  padding: 10px !important;
+}
