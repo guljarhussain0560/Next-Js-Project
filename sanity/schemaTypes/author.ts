@@ -28,6 +28,11 @@ export const author = defineType({
 
         }),
         defineField({
+            name: 'github',
+            type: 'url',
+
+        }),
+        defineField({
             name: 'image',
             type: 'url',
 
