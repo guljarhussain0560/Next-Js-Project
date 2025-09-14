@@ -5,38 +5,51 @@ import { parseServerActionResponse } from "./utils";
 import slugify from "slugify";
 import { writeClient } from "@/sanity/lib/write-client";
 
+// Define a type for startup data
+type StartupData = {
+  title: string;
+  description: string;
+  category: string;
+  image?: string;
+  slug: { _type: "slug"; current: string };
+  author: { _type: "reference"; _ref: string };
+  pitch: string;
+};
+
 export const createPitch = async (
-  state: any,
+  _state: unknown,   // keep for signature compatibility, use unknown instead of any
   form: FormData,
-  pitch: string,
+  pitch: string
 ) => {
   const session = await auth();
 
-  if (!session)
+  if (!session) {
     return parseServerActionResponse({
       error: "Not signed in",
       status: "ERROR",
     });
+  }
 
+  // Extract fields from the form, excluding "pitch"
   const { title, description, category, link } = Object.fromEntries(
-    Array.from(form).filter(([key]) => key !== "pitch"),
-  );
+    Array.from(form).filter(([key]) => key !== "pitch")
+  ) as Record<string, FormDataEntryValue>;
 
   const slug = slugify(title as string, { lower: true, strict: true });
 
   try {
-    const startup = {
-      title,
-      description,
-      category,
-      image: link,
+    const startup: StartupData = {
+      title: title as string,
+      description: description as string,
+      category: category as string,
+      image: link as string,
       slug: {
-        _type: slug,
+        _type: "slug",
         current: slug,
       },
       author: {
         _type: "reference",
-        _ref: session?.id,
+        _ref: session.id,
       },
       pitch,
     };
@@ -49,10 +62,10 @@ export const createPitch = async (
       status: "SUCCESS",
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     return parseServerActionResponse({
-      error: JSON.stringify(error),
+      error: error instanceof Error ? error.message : JSON.stringify(error),
       status: "ERROR",
     });
   }
